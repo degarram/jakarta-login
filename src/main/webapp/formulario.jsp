@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,27 +16,35 @@
   button { margin-top: 24px; background: #E8432A; color: #fff; border: none; padding: 12px 28px;
            border-radius: 8px; font-weight: bold; cursor: pointer; }
   button:hover { background: #c93a22; }
+  .error-msg { background: #FDEDEA; color: #E8432A; border: 1px solid #E8432A;
+    border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-weight: bold; }
 </style>
 </head>
 <body>
   <div class="form-card">
     <h1>Formulario de alta</h1>
+    <% if (request.getAttribute("mensajeError") != null){%>
+      <div class="error-msg">${mensajeError}</div>
+    <%}%>
     <form action="alta" method="post">
 
       <label for="nombre">Nombre</label>
-      <input type="text" id="nombre" name="nombre" required>
+      <input type="text" id="nombre" name="nombre">
 
       <label for="email">Email</label>
       <input type="email" id="email" name="email" required>
 
       <label for="tecnologia">Tecnología con la que más te gustaría trabajar</label>
       <select id="tecnologia" name="tecnologia">
-        <%
+       <%-- <%
             List<String> tecnologias = (List<String>)request.getAttribute("tecnologias");
             for(String t: tecnologias) {
         %>
             <option value="<%=t%>"><%=t%></option>
-        <% } %>
+        <% } %>--%>
+        <c:forEach var="t" items="${tecnologias}">
+          <option value="${t}">${t}</option>
+        </c:forEach>
       </select>
 
       <label for="nivel">Tu nivel actual</label>

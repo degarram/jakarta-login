@@ -39,6 +39,12 @@ public class AltaServlet extends HttpServlet {
         String tecnologia= request.getParameter("tecnologia");
         String nivel = request.getParameter("nivel");
 
+        if (nombre.isBlank()) {
+            request.setAttribute("mensajeError", "El nombre es obligatorio.");
+            request.getRequestDispatcher("/formulario.jsp").forward(request, response);
+            return;
+        }
+
         request.setAttribute("tecnologia", tecnologia);
         request.setAttribute("nombre", nombre);
         request.setAttribute("email", email);
