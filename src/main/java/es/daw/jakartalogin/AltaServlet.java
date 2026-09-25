@@ -4,8 +4,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
+import es.daw.exceptions.FicheroTxtParaLasListasNoEncontradoException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -14,13 +14,13 @@ import jakarta.servlet.annotation.*;
 @WebServlet("/alta")
 public class AltaServlet extends HttpServlet {
 
-    private static final Logger logger = Logger.getLogger(AltaServlet.class.getName());
+    private static List<String> tecnologias = new ArrayList<>();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //Leer el fichero de texto tegnologías.txt y cargar en un ArrayList
-        List<String> tecnologias = new ArrayList<>();
+
         try {
             tecnologias = leerFichero("/WEB-INF/datos/tecnologias.txt");
         } catch (IOException e) {
@@ -41,6 +41,7 @@ public class AltaServlet extends HttpServlet {
 
         if (nombre.isBlank()) {
             request.setAttribute("mensajeError", "El nombre es obligatorio.");
+            request.setAttribute("tecnologias", tecnologias);
             request.getRequestDispatcher("/formulario.jsp").forward(request, response);
             return;
         }
@@ -59,8 +60,7 @@ public class AltaServlet extends HttpServlet {
         InputStream is = getServletContext().getResourceAsStream(rutaFichero);
 
         if (is == null) {
-            //TODO Trabajar con excepciones propias
-            throw new IOException("No se encuentra el fichero "+rutaFichero);
+            throw new FicheroTxtParaLasListasNoEncontradoException();
         }
 
         try(BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
